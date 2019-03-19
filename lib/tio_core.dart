@@ -3,6 +3,5 @@
 /// More dartdocs go here.
 library tio_core;
 
-export 'src/tio_core_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'package:tio_core/src/dimensions/dimensions.dart';
+export 'package:tio_core/src/dimensions/dimensions_data.dart';
