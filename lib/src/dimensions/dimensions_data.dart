@@ -1,6 +1,3 @@
-import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
-
 /// Holds the size and unit values for an app.
 ///
 /// Use this class to configure a [Dimension] widget.
@@ -37,142 +34,46 @@ import 'package:meta/meta.dart';
 /// )
 /// ```
 class DimensionsData {
-  DimensionsData(
-      {this.gridUnit = 4,
-      this.borderRadius = 4,
-      this.screenWidthMin = 320,
-      this.screenWidthSmall = 432,
-      this.screenWidthMedium = 864});
+  DimensionsData({this.scale = 1, this.gridSpacing = 4});
 
-  /// The base grid unit that gets scaled by [scaledGridUnit].
-  final int gridUnit;
+  final double fontSize = 16;
 
-  /// The base border radius that gets scaled by [scaledBorderRadius]
-  final int borderRadius;
+  double scale;
 
-  /// The minimum screen width that the app will support.
-  final int screenWidthMin;
-
-  /// A breakpoint that marks when the screen width is considered small.
-  ///
-  /// Examples for devices with small screen sizes:
-  /// SmartPhones, small sized application windows, split views.
-  final int screenWidthSmall;
-
-  /// A breakpoint that marks when the screen width is considered medium.
-  ///
-  /// Examples for devices with small screen sizes:
-  /// Tablets, medium sized application windows, split views.
-  final int screenWidthMedium;
-
-  /// Border radius scaled by 1.
-  double get borderRadiusSmall => scaledBorderRadius(1);
-
-  /// Border radius scaled by 2.
-  double get borderRadiusMedium => scaledBorderRadius(2);
-
-  /// Border radius scaled by 4.
-  double get borderRadiusBig => scaledBorderRadius(4);
-
-  /// Grid unit scaled by 1.
-  double get gridUnitTiny => scaledGridUnit(1);
-
-  /// Grid unit scaled by 2.
-  double get gridUnitSmall => scaledGridUnit(2);
-
-  /// Grid unit scaled by 4.
-  double get gridUnitMedium => scaledGridUnit(4);
-
-  /// Grid unit scaled by 6.
-  double get gridUnitBig => scaledGridUnit(6);
-
-  /// Grid unit scaled by 8.
-  double get gridUnitLarge => scaledGridUnit(8);
+  /// The base grid unit that gets scaled by [scaling].
+  final int gridSpacing;
 
   /// Returns a [gridUnit] that got scaled by [scale].
   /// The default [scale] is 2.
-  double scaledGridUnit([double scale = 2]) => gridUnit * scale;
+  ///
+  double scaledGridUnit([double scale = 2]) => gridSpacing * scale;
 
-  /// Returns a [borderRadius] that got scaled by [scale].
-  /// The default [scale] is 2.
-  double scaledBorderRadius([double scale = 2]) => borderRadius * scale;
+  Dimen scaled(double value) => ScaledDimension(this, value);
 }
 
-class DimensionData2 {
-  final double scale;
-  final Grid grid;
 
-  DimensionData2({@required this.scale, this.grid});
+class MyFancyDimens extends DimensionsData {
+  double get fabSize => scaled(16).value;
+  double get heightOfbutton => 16;
 }
 
-///
-/// A grid would contain the configuration described here:
-/// https://material.io/design/layout/responsive-layout-grid.html#columns-gutters-margins
-@immutable
-class Grid {
-  final double spacing;
-  final Margins margins;
-
-  Grid({@required this.spacing, @required this.margins});
+abstract class Dimen {
+  double get value;
 }
 
-// -----
-// Margins
-// -----
+class ScaledDimension implements Dimen {
+  final DimensionsData parent;
+  final double initialValue;
 
-@immutable
-class Margins {
-  final double left;
-  final double right;
-
-  Margins(this.left, this.right);
-}
-
-// -----
-// Breakpoint System
-// -----
-
-@immutable
-class BreakpointSystem {
-  final List<Breakpoint> breakpoints;
-
-  BreakpointSystem(this.breakpoints);
-
-  factory BreakpointSystem.simple() {
-    return BreakpointSystem([
-      ScreenWidthBreakpoint(screenWidth: 359.0),
-      ScreenWidthBreakpoint(screenWidth: 399.0),
-      ScreenWidthBreakpoint(screenWidth: 479.0),
-      ScreenWidthBreakpoint(screenWidth: 599.0),
-      ScreenWidthBreakpoint(screenWidth: 719.0),
-    ]);
-  }
-}
-
-abstract class Breakpoint {
-  bool shouldBreak(BuildContext context);
-}
-
-class ScreenWidthBreakpoint implements Breakpoint {
-  final double screenWidth;
-
-  ScreenWidthBreakpoint({@required this.screenWidth});
+  ScaledDimension(this.parent, this.initialValue);
 
   @override
-  bool shouldBreak(BuildContext context) {
-    //TODO get width and compare
-    return false;
-  }
+  double get value => initialValue * parent.scale;
 }
 
-// -----
-// Material example
-// -----
 
-class MaterialGrid implements Grid {
-  @override
-  double get spacing => 4.0;
-
-  @override
-  Margins get margins => Margins(16.0, 16.0);
+class MyDimensions {
+  MyDimensions({this.fontSize = 16, this.gridSpacing = 0.5});
+  final double fontSize;
+  final double gridSpacing;
 }
