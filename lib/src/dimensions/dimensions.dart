@@ -8,7 +8,7 @@ import 'package:tio_core/src/dimensions/dimensions_data.dart';
 /// Descendant widgets obtain the current Dimensions [DimensionsData] object
 /// using [Dimensions.of]. When a widget uses [Dimensions.of], it is
 /// automatically rebuilt if the dimensions later change, so that the changes
-/// can be applied. TODO: Is this true in this case, because we are iterating the tree manually?
+/// can be applied.
 ///
 /// Take a look at [DimensionsData] to learn more about how to extend
 /// [DimensionsData] to add your own values.
@@ -29,22 +29,25 @@ class Dimensions<D extends DimensionsData> extends StatelessWidget {
   final D data;
 
   static D of<D extends DimensionsData>(BuildContext context) {
-    _InheritedDimensions<D> inheritedDimensions;
-    TypeMatcher<_InheritedDimensions<D>> typeMatcher = TypeMatcher();
-    context.visitAncestorElements((element) {
-      if (typeMatcher.check(element.widget)) {
-        inheritedDimensions = element.widget as _InheritedDimensions<D>;
-        return false;
-      }
-      return true;
-    });
-    if (inheritedDimensions == null) throw DimensionsNotFound(D);
-    return inheritedDimensions.dimensions.data;
+    _InheritedDimensions<D> inheritedDimensions = context
+        .inheritFromWidgetOfExactType(_typeOf<_InheritedDimensions<D>>());
+
+    if (inheritedDimensions != null) {
+      return inheritedDimensions.dimensions.data;
+    }
+
+    throw DimensionsNotFound(D);
   }
 
   @override
   Widget build(BuildContext context) =>
       _InheritedDimensions<D>(dimensions: this, child: child);
+
+  // -----
+  // Util
+  // -----
+
+  static Type _typeOf<T>() => T;
 }
 
 class _InheritedDimensions<D extends DimensionsData> extends InheritedWidget {
@@ -66,6 +69,5 @@ class DimensionsNotFound extends Error {
   DimensionsNotFound(this._type);
 
   @override
-  String toString() => "Dimensions of type $_type could not be found in the "
-      "ancestor tree.";
+  String toString() => "Dimensions of type $_type is not an ancestor.";
 }

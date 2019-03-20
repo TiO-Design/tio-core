@@ -1,5 +1,5 @@
-name: tio_core
-description: A starting point for Dart libraries or applications.
+name: example
+description: The example app for tio_core.
 # version: 1.0.0
 # homepage: https://www.example.com
 # author: tobias <email@example.com>
@@ -13,6 +13,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  tio_core:
+    path: ..
 
 dev_dependencies:
   pedantic: ^1.0.0
