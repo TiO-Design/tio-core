@@ -1,3 +1,6 @@
+import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
+
 /// Holds the size and unit values for an app.
 ///
 /// Use this class to configure a [Dimension] widget.
@@ -34,11 +37,12 @@
 /// )
 /// ```
 class DimensionsData {
-  DimensionsData({this.gridUnit = 4,
-    this.borderRadius = 4,
-    this.screenWidthMin = 320,
-    this.screenWidthSmall = 432,
-    this.screenWidthMedium = 864});
+  DimensionsData(
+      {this.gridUnit = 4,
+      this.borderRadius = 4,
+      this.screenWidthMin = 320,
+      this.screenWidthSmall = 432,
+      this.screenWidthMedium = 864});
 
   /// The base grid unit that gets scaled by [scaledGridUnit].
   final int gridUnit;
@@ -92,4 +96,83 @@ class DimensionsData {
   /// Returns a [borderRadius] that got scaled by [scale].
   /// The default [scale] is 2.
   double scaledBorderRadius([double scale = 2]) => borderRadius * scale;
+}
+
+class DimensionData2 {
+  final double scale;
+  final Grid grid;
+
+  DimensionData2({@required this.scale, this.grid});
+}
+
+///
+/// A grid would contain the configuration described here:
+/// https://material.io/design/layout/responsive-layout-grid.html#columns-gutters-margins
+@immutable
+class Grid {
+  final double spacing;
+  final Margins margins;
+
+  Grid({@required this.spacing, @required this.margins});
+}
+
+// -----
+// Margins
+// -----
+
+@immutable
+class Margins {
+  final double left;
+  final double right;
+
+  Margins(this.left, this.right);
+}
+
+// -----
+// Breakpoint System
+// -----
+
+@immutable
+class BreakpointSystem {
+  final List<Breakpoint> breakpoints;
+
+  BreakpointSystem(this.breakpoints);
+
+  factory BreakpointSystem.simple() {
+    return BreakpointSystem([
+      ScreenWidthBreakpoint(screenWidth: 359.0),
+      ScreenWidthBreakpoint(screenWidth: 399.0),
+      ScreenWidthBreakpoint(screenWidth: 479.0),
+      ScreenWidthBreakpoint(screenWidth: 599.0),
+      ScreenWidthBreakpoint(screenWidth: 719.0),
+    ]);
+  }
+}
+
+abstract class Breakpoint {
+  bool shouldBreak(BuildContext context);
+}
+
+class ScreenWidthBreakpoint implements Breakpoint {
+  final double screenWidth;
+
+  ScreenWidthBreakpoint({@required this.screenWidth});
+
+  @override
+  bool shouldBreak(BuildContext context) {
+    //TODO get width and compare
+    return false;
+  }
+}
+
+// -----
+// Material example
+// -----
+
+class MaterialGrid implements Grid {
+  @override
+  double get spacing => 4.0;
+
+  @override
+  Margins get margins => Margins(16.0, 16.0);
 }
