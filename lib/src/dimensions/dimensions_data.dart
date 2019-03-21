@@ -50,8 +50,6 @@ class DimensionsData implements Alignable {
 
   Dimen scaled(double value) => Dimen(data: this, value: value * scale);
 
-  //Dimen scaledJulian(double value) => ScaledDimension(this, value);
-
   // -----
   // Util
   // -----
@@ -111,13 +109,3 @@ class Dimen implements Alignable, Scalable {
 
   Dimen scaled() => Dimen(data: data, value: value * data.scale);
 }
-
-/*class ScaledDimen implements Dimen {
-  final DimensionsData parent;
-  final double initialValue;
-
-  ScaledDimen(this.parent, this.initialValue);
-
-  @override
-  double get value => initialValue * parent.scale;
-}*/
