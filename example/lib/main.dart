@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tio_core/tio_core.dart';
 
-class ExtendedDimensions extends DimensionsData {
-  double additional() => 2;
-}
-
 class NotFoundDimensions extends DimensionsData {}
 
 void main() => runApp(TiOCoreExample());
@@ -16,8 +12,8 @@ class TiOCoreExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         color: Colors.blue,
-        home: Dimensions<ExtendedDimensions>(
-            data: ExtendedDimensions(),
+        home: Dimensions<AppDimensionsData>(
+            data: AppDimensionsData(),
             child: Dimensions<DimensionsData>(
                 data: DimensionsData(scale: 2),
                 child: Builder(builder: (context) {
@@ -33,13 +29,17 @@ class TiOCoreExample extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  "additional() - ExtendedDimensionsData: ${Dimensions.of<AppDimensionsData>(context).additional()}"),
+                                  "screenWidthMedium - AppDimensionsData: ${Dimensions
+                                      .of<AppDimensionsData>(context)
+                                      .screenWidthMedium}"),
                               Text(
-                                  "scaledGridUnit() - DimensionsData: ${Dimensions.of(context).onGrid()}"),
+                                  "onGrid(1) - DimensionsData: ${Dimensions.of(
+                                      context).onGrid(1)}"),
                               Text(
-                                  "scaledGridUnit() - ExtendedDimensionsData: ${Dimensions.of<ExtendedDimensions>(context).onGrid()}"),
-                              Text(
-                                  "textScaleFactor ${MediaQuery.of(context).textScaleFactor.toString()}")
+                                  "textScaleFactor: ${MediaQuery
+                                      .of(context)
+                                      .textScaleFactor
+                                      .toString()}")
                               /*Text("throws DimensionsNotFound: ${Dimensions.of<NotFoundDimensions>(context)}")*/
                             ]),
                         TextBoxThatShouldScale(),
@@ -61,21 +61,5 @@ class TextBoxThatShouldScale extends StatelessWidget {
         height: dimensions.onGrid(8, scaled: true),
         decoration: BoxDecoration(border: Border.all(color: Colors.black)),
         child: Center(child: Text("scaaled")));
-  }
-}
-
-class TextScaleAwareDimensions<D extends DimensionsData>
-    extends StatelessWidget {
-  final D data;
-  final Widget child;
-
-  TextScaleAwareDimensions({this.data, @required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    var textScaleFactor = MediaQuery.of(context).textScaleFactor;
-    var data = this.data ?? Dimensions.of<D>(context);
-    return Dimensions<D>(
-        data: data.copyWith(scale: data.scale * textScaleFactor), child: child);
   }
 }

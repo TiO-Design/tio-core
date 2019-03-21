@@ -28,6 +28,31 @@ class Dimensions<D extends DimensionsData> extends StatelessWidget {
   /// Specifies the dimension values for descendant widgets.
   final D data;
 
+  /// The data from the closest [Dimensions] (with the specific type [D]
+  /// instance that encloses the given context.
+  ///
+  /// Typical usage is as follows:
+  ///
+  /// Let AppDimensionsData be a subclass of [DimensionsData].
+  /// To obtain AppDimensionsData, use [Dimensions.of] with
+  /// AppDimensionsData as the generic type.
+  ///
+  /// {@tool sample}
+  /// ```dart
+  /// Dimensions.of<AppDimensionsData>(context).someValue;
+  /// ```
+  ///
+  /// This assumes that you have a [Dimensions] ancestor somewhere in your
+  /// ancestor tree with the same generic type, else [DimensionsNotFound]
+  /// will be thrown.
+  ///
+  /// {@tool sample}
+  /// ```dart
+  /// Dimensions<AppDimensionsData>(
+  ///   data: AppDimensionsData(),
+  ///   child: ...
+  /// )
+  /// ```
   static D of<D extends DimensionsData>(BuildContext context) {
     _InheritedDimensions<D> inheritedDimensions = context
         .inheritFromWidgetOfExactType(_typeOf<_InheritedDimensions<D>>());
@@ -49,6 +74,30 @@ class Dimensions<D extends DimensionsData> extends StatelessWidget {
 
   static Type _typeOf<T>() => T;
 }
+
+/// Creates new scoped [Dimensions] that use the system text scale factor
+/// as [DimensionsData.scale].
+class TextScaleAwareDimensions<D extends DimensionsData>
+    extends StatelessWidget {
+  final D data;
+  final Widget child;
+
+  TextScaleAwareDimensions({this.data, @required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    var textScaleFactor = MediaQuery
+        .of(context)
+        .textScaleFactor;
+    var data = this.data ?? Dimensions.of<D>(context);
+    return Dimensions<D>(
+        data: data.copyWith(scale: data.scale * textScaleFactor), child: child);
+  }
+}
+
+// -----
+// Secondary stuff
+// -----
 
 class _InheritedDimensions<D extends DimensionsData> extends InheritedWidget {
   _InheritedDimensions(
