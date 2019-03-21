@@ -11,17 +11,17 @@ import 'package:meta/meta.dart';
 /// {@tool sample}
 ///
 /// ```dart
-/// class ExtendedDimensionsData extends DimensionsData {
+/// class AppDimensionsData extends DimensionsData {
 ///   final double additionalValue = 32.0;
 /// }
 /// ```
 ///
-/// To obtain ExtendedDimensionsData, use [Dimensions.of] with
-/// ExtendedDimensionsData as the generic type.
+/// To obtain AppDimensionsData, use [Dimensions.of] with
+/// AppDimensionsData as the generic type.
 ///
 /// {@tool sample}
 /// ```dart
-/// Dimensions.of<ExtendedDimensionsData>(context).additionalValue;
+/// Dimensions.of<AppDimensionsData>(context).additionalValue;
 /// ```
 ///
 /// This assumes that you have a [Dimensions] ancestor somewhere in your
@@ -30,82 +30,147 @@ import 'package:meta/meta.dart';
 ///
 /// {@tool sample}
 /// ```dart
-/// Dimensions<ExtendedDimensionsData>(
+/// Dimensions<AppDimensionsData>(
 ///   data: ExtendedDimensionsData(),
 ///   child: ...
 /// )
 /// ```
-class DimensionsData implements Alignable {
+class DimensionsData {
   DimensionsData({this.scale = 1, this.grid = 4});
 
+  /// The scale that gets used inside [scaled] and [unscaled]
+  /// for scaling or unscaling dimensions.
   double scale;
 
-  /// The base grid unit that gets scaled by [scaling].
+  /// Specifies the spacing of your apps grid which is used to align your UI Elements.
+  ///
+  /// Use [onGrid] to get dimensions that align on the grid.
   final double grid;
 
   /// Returns a value that aligns on the [grid].
-  /// You can specify the size of the value by adjusting [scale].
-  /// The default [scale] is 1.
-  Dimen onGrid([double scale = 1]) => Dimen(data: this, value: grid * scale);
+  ///
+  /// You can specify the size of the value by adjusting [multiplier].
+  /// 
+  double onGrid(double multiplier, {bool scaled = false}) {
+    var value = grid * multiplier;
+    if (scaled) {
+      value = value * scale;
+    }
 
-  Dimen scaled(double value) => Dimen(data: this, value: value * scale);
+    return value;
+  }
+
+  /// Scales [value] by [scale].
+  ///
+  /// Make sure [value] has been scaled before because this method will always scale.
+  @experimental
+  double scaled(double value) => value * scale;
+
+  /// Unscales [value] by [scale].
+  ///
+  /// Make sure [value] has been scaled before because this method will always unscale.
+  @experimental
+  double unscaled(double value) => value / scale;
 
   // -----
   // Util
   // -----
 
+  /// Creates a new instance and updates the given values.
+  /// Be aware that null values will always be replaced by the current value of this instance.
   DimensionsData copyWith({double scale, double grid}) =>
       DimensionsData(scale: scale ?? this.scale, grid: grid ?? this.grid);
 }
 
-class BaseDimensionsData extends DimensionsData {
-  /// Border radius scaled by 1.
-  Dimen get borderRadiusSmall => onGrid(1);
+// -----
+// Experimental api
+// -----
 
-  /// Border radius scaled by 2.
-  Dimen get borderRadiusMedium => onGrid(2);
+/*
+@experimental
+class Dimensions {
+  final double scale;
 
-  /// Border radius scaled by 4.
-  Dimen get borderRadiusBig => onGrid(4);
-
-  /// Grid unit scaled by 1.
-  Dimen get gridUnitTiny => onGrid(1);
-
-  /// Grid unit scaled by 2.
-  Dimen get gridUnitSmall => onGrid(2);
-
-  /// Grid unit scaled by 4.
-  Dimen get gridUnitMedium => onGrid(4);
-
-  /// Grid unit scaled by 6.
-  Dimen get gridUnitBig => onGrid(6);
-
-  /// Grid unit scaled by 8.
-  Dimen get gridUnitLarge => onGrid(8);
-
-  Dimen get screenWidthMin => Dimen(data: this, value: 320);
-
-  Dimen get screenWidthSmall => Dimen(data: this, value: 432);
-
-  Dimen get screenWidthMedium => Dimen(data: this, value: 864);
+  Dimensions(this.scale);
 }
 
-abstract class Alignable {
-  Dimen onGrid([double scale = 1]);
+@experimental
+abstract class Dimension {
+  double get value;
 }
 
-abstract class Scalable {
-  Dimen scaled();
+@experimental
+class _ScaledDimension implements Dimension {
+  final Dimensions parent;
+  final double initialValue;
+
+  _ScaledDimension(this.parent, this.initialValue);
+
+  @override
+  double get value => this.parent.scale * value;
 }
 
-class Dimen implements Alignable, Scalable {
-  final DimensionsData data;
-  final double value;
 
-  Dimen({@required this.data, @required this.value});
+@experimental
+class _PlatformAwareDimension implements Dimension {
+  final BuildContext context;
 
-  Dimen onGrid([double scale = 1]) =>
-      Dimen(data: data, value: data.grid * scale);
+  final double iOS;
+  final double android;
+  final double fuchsia;
+  final double web;
+  final double desktop;
+  final double fallback;
 
-  Dimen scaled() => Dimen(data: data, value: value * data.scale);
+  _PlatformAwareDimension(this.context,
+      this.iOS,
+      this.android,
+      this.fuchsia,
+      this.web,
+      this.desktop,
+      this.fallback,);
+
+  @override
+  double get value {
+    var platform = Theme
+        .of(context)
+        .platform;
+
+    switch (platform) {
+      case TargetPlatform.iOS:
+        return iOS ?? fallback;
+      case TargetPlatform.android:
+        return android ?? fallback;
+      case TargetPlatform.fuchsia:
+        return fuchsia ?? fallback;
+
+    //TODO add cases for web and desktop as well
+    }
+
+    return fallback;
+  }
 }
+
+@experimental
+class _OrientationDimension implements Dimension {
+  final BuildContext context;
+  final double landscape;
+  final double portrait;
+
+  _OrientationDimension(this.context, this.landscape, this.portrait);
+
+  @override
+  double get value {
+    var orientation = MediaQuery
+        .of(context)
+        .orientation;
+    switch (orientation) {
+      case Orientation.landscape:
+        return landscape;
+      case Orientation.portrait:
+        return portrait;
+    }
+
+    throw Exception("fuck you compiler");
+  }
+}*/

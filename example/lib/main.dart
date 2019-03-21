@@ -1,3 +1,4 @@
+import 'package:example/app_dimensions_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tio_core/tio_core.dart';
@@ -32,20 +33,13 @@ class TiOCoreExample extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  "additional() - ExtendedDimensionsData: ${Dimensions
-                                      .of<ExtendedDimensions>(context)
-                                      .additional()}"),
+                                  "additional() - ExtendedDimensionsData: ${Dimensions.of<AppDimensionsData>(context).additional()}"),
                               Text(
-                                  "scaledGridUnit() - DimensionsData: ${Dimensions
-                                      .of(context).onGrid()}"),
+                                  "scaledGridUnit() - DimensionsData: ${Dimensions.of(context).onGrid()}"),
                               Text(
-                                  "scaledGridUnit() - ExtendedDimensionsData: ${Dimensions
-                                      .of<ExtendedDimensions>(context)
-                                      .onGrid()}"),
-                              Text("textScaleFactor ${MediaQuery
-                                  .of(context)
-                                  .textScaleFactor
-                                  .toString()}")
+                                  "scaledGridUnit() - ExtendedDimensionsData: ${Dimensions.of<ExtendedDimensions>(context).onGrid()}"),
+                              Text(
+                                  "textScaleFactor ${MediaQuery.of(context).textScaleFactor.toString()}")
                               /*Text("throws DimensionsNotFound: ${Dimensions.of<NotFoundDimensions>(context)}")*/
                             ]),
                         TextBoxThatShouldScale(),
@@ -63,13 +57,8 @@ class TextBoxThatShouldScale extends StatelessWidget {
   Widget build(BuildContext context) {
     var dimensions = Dimensions.of(context);
     return Container(
-        width: dimensions
-            .scaled(30)
-            .value,
-        height: dimensions
-            .onGrid(8)
-            .scaled()
-            .value,
+        width: dimensions.scaled(30),
+        height: dimensions.onGrid(8, scaled: true),
         decoration: BoxDecoration(border: Border.all(color: Colors.black)),
         child: Center(child: Text("scaaled")));
   }
@@ -84,9 +73,7 @@ class TextScaleAwareDimensions<D extends DimensionsData>
 
   @override
   Widget build(BuildContext context) {
-    var textScaleFactor = MediaQuery
-        .of(context)
-        .textScaleFactor;
+    var textScaleFactor = MediaQuery.of(context).textScaleFactor;
     var data = this.data ?? Dimensions.of<D>(context);
     return Dimensions<D>(
         data: data.copyWith(scale: data.scale * textScaleFactor), child: child);
