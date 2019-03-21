@@ -42,10 +42,10 @@ class TiOCoreExample extends StatelessWidget {
                                   "scaledGridUnit() - ExtendedDimensionsData: ${Dimensions
                                       .of<ExtendedDimensions>(context)
                                       .onGrid()}"),
-                              Text(MediaQuery
+                              Text("textScaleFactor ${MediaQuery
                                   .of(context)
                                   .textScaleFactor
-                                  .toString())
+                                  .toString()}")
                               /*Text("throws DimensionsNotFound: ${Dimensions.of<NotFoundDimensions>(context)}")*/
                             ]),
                         TextBoxThatShouldScale(),
@@ -64,7 +64,7 @@ class TextBoxThatShouldScale extends StatelessWidget {
     var dimensions = Dimensions.of(context);
     return Container(
         width: dimensions
-            .scaled(60)
+            .scaled(30)
             .value,
         height: dimensions
             .onGrid(8)
