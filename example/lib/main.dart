@@ -3,41 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:tio_core/tio_core.dart';
 
 class ExtendedDimensions extends DimensionsData {
-  double screenWidthMin = 320;
-  double screenWidthSmall = 432;
-  double screenWidthMedium = 864;
-
   double additional() => 2;
-
-  /// The base border radius that gets scaled by [scaling].
-  final double borderRadius;
-
-  /// Border radius scaled by 1.
-  double get borderRadiusSmall => scaledBorderRadius(1);
-
-  /// Border radius scaled by 2.
-  double get borderRadiusMedium => scaledBorderRadius(2);
-
-  /// Border radius scaled by 4.
-  double get borderRadiusBig => scaledBorderRadius(4);
-
-  /// Grid unit scaled by 1.
-  double get gridUnitTiny => scaledGridUnit(1);
-
-  /// Grid unit scaled by 2.
-  double get gridUnitSmall => scaledGridUnit(2);
-
-  /// Grid unit scaled by 4.
-  double get gridUnitMedium => scaledGridUnit(4);
-
-  /// Grid unit scaled by 6.
-  double get gridUnitBig => scaledGridUnit(6);
-
-  /// Grid unit scaled by 8.
-  double get gridUnitLarge => scaledGridUnit(8);
-
-  @override
-  double scaledGridUnit([double scale = 2]) => 16;
 }
 
 class NotFoundDimensions extends DimensionsData {}
@@ -52,25 +18,72 @@ class TiOCoreExample extends StatelessWidget {
         home: Dimensions<ExtendedDimensions>(
             data: ExtendedDimensions(),
             child: Dimensions<DimensionsData>(
-                data: DimensionsData(),
+                data: DimensionsData(scale: 2),
                 child: Builder(builder: (context) {
                   return Scaffold(
                       body: SafeArea(
                           child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              "additional() - ExtendedDimensionsData: ${Dimensions.of<ExtendedDimensions>(context).additional()}"),
-                          Text(
-                              "scaledGridUnit() - DimensionsData: ${Dimensions.of(context).scaledGridUnit()}"),
-                          Text(
-                              "scaledGridUnit() - ExtendedDimensionsData: ${Dimensions.of<ExtendedDimensions>(context).scaledGridUnit()}"),
-                          /*Text("throws DimensionsNotFound: ${Dimensions.of<NotFoundDimensions>(context)}")*/
-                        ]),
+                      children: [
+                        Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  "additional() - ExtendedDimensionsData: ${Dimensions
+                                      .of<ExtendedDimensions>(context)
+                                      .additional()}"),
+                              Text(
+                                  "scaledGridUnit() - DimensionsData: ${Dimensions
+                                      .of(context).onGrid()}"),
+                              Text(
+                                  "scaledGridUnit() - ExtendedDimensionsData: ${Dimensions
+                                      .of<ExtendedDimensions>(context)
+                                      .onGrid()}"),
+                              Text(MediaQuery
+                                  .of(context)
+                                  .textScaleFactor
+                                  .toString())
+                              /*Text("throws DimensionsNotFound: ${Dimensions.of<NotFoundDimensions>(context)}")*/
+                            ]),
+                        TextBoxThatShouldScale(),
+                        TextScaleAwareDimensions(
+                            child: TextBoxThatShouldScale())
+                      ],
+                    ),
                   )));
                 }))));
+  }
+}
+
+class TextBoxThatShouldScale extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var dimensions = Dimensions.of(context);
+    return Container(
+        width: dimensions.scaled(60),
+        height: dimensions.scaled(dimensions.onGrid(8)),
+        decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+        child: Center(child: Text("scaaled")));
+  }
+}
+
+class TextScaleAwareDimensions<D extends DimensionsData>
+    extends StatelessWidget {
+  final D data;
+  final Widget child;
+
+  TextScaleAwareDimensions({this.data, @required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    var textScaleFactor = MediaQuery
+        .of(context)
+        .textScaleFactor;
+    var data = this.data ?? Dimensions.of<D>(context);
+    return Dimensions<D>(
+        data: data.copyWith(scale: data.scale * textScaleFactor), child: child);
   }
 }

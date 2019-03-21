@@ -34,27 +34,63 @@
 /// )
 /// ```
 class DimensionsData {
-  DimensionsData({this.scale = 1, this.gridSpacing = 4});
-
-  final double fontSize = 16;
+  DimensionsData({this.scale = 1, this.grid = 4});
 
   double scale;
 
   /// The base grid unit that gets scaled by [scaling].
-  final int gridSpacing;
+  final double grid;
 
-  /// Returns a [gridUnit] that got scaled by [scale].
-  /// The default [scale] is 2.
-  ///
-  double scaledGridUnit([double scale = 2]) => gridSpacing * scale;
+  /// Returns a value that aligns on the [grid].
+  /// You can specify the size of the value by adjusting [scale].
+  /// The default [scale] is 1.
+  double onGrid([double scale = 1]) => grid * scale;
 
-  Dimen scaled(double value) => ScaledDimension(this, value);
+  double scaled(double value) => value * scale;
+
+  //Dimen scaledJulian(double value) => ScaledDimension(this, value);
+
+  // -----
+  // Util
+  // -----
+  DimensionsData copyWith({double scale, double grid}) =>
+      DimensionsData(scale: scale ?? this.scale, grid: grid ?? this.grid);
 }
 
+class BaseDimensionsData extends DimensionsData {
+  /// Border radius scaled by 1.
+  double get borderRadiusSmall => onGrid(1);
 
-class MyFancyDimens extends DimensionsData {
-  double get fabSize => scaled(16).value;
-  double get heightOfbutton => 16;
+  /// Border radius scaled by 2.
+  double get borderRadiusMedium => onGrid(2);
+
+  /// Border radius scaled by 4.
+  double get borderRadiusBig => onGrid(4);
+
+  /// Grid unit scaled by 1.
+  double get gridUnitTiny => onGrid(1);
+
+  /// Grid unit scaled by 2.
+  double get gridUnitSmall => onGrid(2);
+
+  /// Grid unit scaled by 4.
+  double get gridUnitMedium => onGrid(4);
+
+  /// Grid unit scaled by 6.
+  double get gridUnitBig => onGrid(6);
+
+  /// Grid unit scaled by 8.
+  double get gridUnitLarge => onGrid(8);
+
+  double screenWidthMin = 320;
+  double screenWidthSmall = 432;
+  double screenWidthMedium = 864;
+}
+
+class ExampleDimensionsData extends BaseDimensionsData {
+  double get fabSize => scaled(onGrid(4));
+
+  double get paddingSmall => onGrid(2);
 }
 
 abstract class Dimen {
@@ -69,11 +105,4 @@ class ScaledDimension implements Dimen {
 
   @override
   double get value => initialValue * parent.scale;
-}
-
-
-class MyDimensions {
-  MyDimensions({this.fontSize = 16, this.gridSpacing = 0.5});
-  final double fontSize;
-  final double gridSpacing;
 }

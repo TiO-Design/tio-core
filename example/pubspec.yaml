@@ -14,7 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   tio_core:
-    path: ..
+    path: ../
 
 dev_dependencies:
   pedantic: ^1.0.0
