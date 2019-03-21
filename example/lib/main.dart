@@ -63,8 +63,13 @@ class TextBoxThatShouldScale extends StatelessWidget {
   Widget build(BuildContext context) {
     var dimensions = Dimensions.of(context);
     return Container(
-        width: dimensions.scaled(60),
-        height: dimensions.scaled(dimensions.onGrid(8)),
+        width: dimensions
+            .scaled(60)
+            .value,
+        height: dimensions
+            .onGrid(8)
+            .scaled()
+            .value,
         decoration: BoxDecoration(border: Border.all(color: Colors.black)),
         child: Center(child: Text("scaaled")));
   }
