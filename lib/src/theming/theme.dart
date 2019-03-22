@@ -11,13 +11,12 @@ import 'package:flutter/material.dart';
  *    - color for shapes/materials
  *    - IconTheme:
  *        - selected Color
- *        - unnselected Color
+ *        - unselected Color
  *        - focus Color
  *    - TextTHeme:
  *        - font sizes
  *        - font color
  *        - font family
- *
  */
 
 
