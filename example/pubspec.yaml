@@ -1,0 +1,23 @@
+name: example
+description: The example app for tio_core.
+# version: 1.0.0
+# homepage: https://www.example.com
+# author: tobias <email@example.com>
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+#dependencies:
+#  path: ^1.4.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  tio_core:
+    path: ../
+
+dev_dependencies:
+  pedantic: ^1.0.0
+  test: ^1.0.0
+
+flutter:
