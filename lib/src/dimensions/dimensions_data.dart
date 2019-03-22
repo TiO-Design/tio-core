@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:tio_core/tio_core.dart';
 
 /// Holds the size and unit values for an app.
 ///
@@ -8,33 +9,8 @@ import 'package:meta/meta.dart';
 ///
 /// You can extend this class to to add additional values.
 ///
-/// {@tool sample}
-///
-/// ```dart
-/// class AppDimensionsData extends DimensionsData {
-///   final double additionalValue = 32.0;
-/// }
-/// ```
-///
-/// To obtain AppDimensionsData, use [Dimensions.of] with
-/// AppDimensionsData as the generic type.
-///
-/// {@tool sample}
-/// ```dart
-/// Dimensions.of<AppDimensionsData>(context).additionalValue;
-/// ```
-///
-/// This assumes that you have a [Dimensions] ancestor somewhere in your
-/// ancestor tree with the same generic type, else [DimensionsNotFound] will be
-/// thrown.
-///
-/// {@tool sample}
-/// ```dart
-/// Dimensions<AppDimensionsData>(
-///   data: ExtendedDimensionsData(),
-///   child: ...
-/// )
-/// ```
+/// Take a look at [Dimensions.of] for more information on how to obtain
+/// [DimensionsData].
 class DimensionsData {
   DimensionsData({this.scale = 1, this.grid = 4});
 
@@ -50,7 +26,7 @@ class DimensionsData {
   /// Returns a value that aligns on the [grid].
   ///
   /// You can specify the size of the value by adjusting [multiplier].
-  /// 
+  /// Set [scaled] to true if you want the value to scale by [scale].
   double onGrid(double multiplier, {bool scaled = false}) {
     var value = grid * multiplier;
     if (scaled) {
