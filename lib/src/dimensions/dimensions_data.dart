@@ -58,6 +58,9 @@ class DimensionsData {
       DimensionsData(scale: scale ?? this.scale, grid: grid ?? this.grid);
 }
 
+/// Empty dimensions that can be used if not dimensions are required
+class EmptyDimensionsData extends DimensionsData {}
+
 // -----
 // Experimental api
 // -----

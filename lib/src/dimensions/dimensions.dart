@@ -86,9 +86,7 @@ class TextScaleAwareDimensions<D extends DimensionsData>
 
   @override
   Widget build(BuildContext context) {
-    var textScaleFactor = MediaQuery
-        .of(context)
-        .textScaleFactor;
+    var textScaleFactor = MediaQuery.of(context).textScaleFactor;
     var data = this.data ?? Dimensions.of<D>(context);
     return Dimensions<D>(
         data: data.copyWith(scale: data.scale * textScaleFactor), child: child);

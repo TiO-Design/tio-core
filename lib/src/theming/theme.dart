@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 /**
- * Feature/Ideas:
- *
  * Foundation:
  *    - lerp utils for animations
  *    - type adapter for material/cupertino
  *    - background color
  *    - add support for shaping
  *    - color for shapes/materials
+ *
  *    - IconTheme:
  *        - selected Color
  *        - unselected Color
@@ -17,34 +16,34 @@ import 'package:flutter/material.dart';
  *        - font sizes
  *        - font color
  *        - font family
+ *
+ *        BaseTheme:
+ *          - accentColor -> Shadable
+ *          - surfaceColor -> Shadable
+ *          - (disabledColor -> Color)
+ *
+ *          - textTheme
+ *            - font color -> Shadable
+ *            - font family
  */
 
+class TioThemeData {
+  final ColorSwatch<int> accentColor;
+  final ColorSwatch<int> surfaceColor;
+  final ColorSwatch<int> disabledColor;
 
-//ignore ugly draft
-abstract class IconTheme {
-  Color get unselected;
-
-  Color get selected;
-
-  Color get focused;
-}
-
-abstract class TextTheme {
-  Color get title;
-
-  Color get subtitle;
-}
-
-abstract class Theme {}
-
-class MaterialTheme {
-  final Color primary;
-  final Color secondary;
-  final Color accent;
-
-  MaterialTheme({
-    @required this.primary,
-    @required this.secondary,
-    @required this.accent,
+  TioThemeData({
+    @required this.accentColor,
+    @required this.surfaceColor,
+    @required this.disabledColor,
   });
+
+  // -----
+  // Material theme
+  // -----
+
+  ThemeData asMaterialTheme() => ThemeData(
+      accentColor: accentColor,
+      cardColor: surfaceColor,
+      disabledColor: disabledColor);
 }
