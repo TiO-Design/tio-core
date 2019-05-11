@@ -21,7 +21,27 @@ class TiOCoreExample extends StatelessWidget {
         disabledColor: constantSwatchFromColor(Colors.black54),
         surfaceColor: constantSwatchFromColor(Colors.white),
       ),
-      home: ScalingPlayground(),
+      home: Container(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            FlatButton(
+              onPressed: () => _navigateToDimensionPage(context),
+              child: Text("Dimensions"),
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  // -----
+  // Routing
+  // -----
+
+  void _navigateToDimensionPage(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute<Object>(builder: (context) {
+      return ScalingPlayground();
+    }));
   }
 }

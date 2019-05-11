@@ -27,6 +27,23 @@ import 'package:flutter/material.dart';
  *            - font family
  */
 
+class TioTheme<T extends TioThemeData> extends InheritedWidget {
+  final T theme;
+
+  const TioTheme({Key key, @required this.theme, @required Widget child})
+      : assert(child != null),
+        super(key: key, child: child);
+
+  static T of<T extends TioTheme>(BuildContext context) {
+    return context.inheritFromWidgetOfExactType(TioTheme) as TioTheme;
+  }
+
+  @override
+  bool updateShouldNotify(TioTheme old) {
+    return old.theme != theme;
+  }
+}
+
 class TioThemeData {
   final ColorSwatch<int> accentColor;
   final ColorSwatch<int> surfaceColor;
