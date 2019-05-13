@@ -6,9 +6,6 @@ homepage: https://github.com/TiO-Design/tio-core
 environment:
   sdk: '>=2.1.0 <3.0.0'
 
-#dependencies:
-#  path: ^1.4.1
-
 dependencies:
   flutter:
     sdk: flutter

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/tio-core.iml" filepath="$PROJECT_DIR$/.idea/tio-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/tio-core.iml" filepath="$PROJECT_DIR$/tio-core.iml" />
     </modules>
   </component>
