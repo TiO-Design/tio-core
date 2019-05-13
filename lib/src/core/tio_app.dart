@@ -18,6 +18,8 @@ class TioApp<D extends DimensionsData> extends StatelessWidget {
   final RouteFactory onGenerateRoute;
   final List<LocalizationsDelegate> localizationsDelegates;
 
+  final Color color;
+
   TioApp({
     @required this.home,
     @required this.theme,
@@ -25,6 +27,7 @@ class TioApp<D extends DimensionsData> extends StatelessWidget {
     this.title,
     this.onGenerateRoute,
     this.localizationsDelegates,
+    this.color,
   });
 
   @override
@@ -35,7 +38,7 @@ class TioApp<D extends DimensionsData> extends StatelessWidget {
         data: dimensions,
         child: WidgetsApp(
           title: title ?? "",
-          color: Colors.white,
+          color: color ?? Colors.white,
           builder: (context, widget) => widget,
           onGenerateRoute: onGenerateRoute,
           pageRouteBuilder: _pageRouteBuilder,
