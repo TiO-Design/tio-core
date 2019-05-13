@@ -1,4 +1,3 @@
-import 'package:flutter/animation.dart';
 import 'package:flutter/painting.dart';
 
 ColorSwatch<int> constantSwatchFromColor(Color color) => ColorSwatch(
@@ -16,11 +15,3 @@ ColorSwatch<int> constantSwatchFromColor(Color color) => ColorSwatch(
         900: Color(color.value),
       },
     );
-
-//TODO (julian) implement or remove
-ColorSwatch<int> linearSwatchFromColor(Color color) =>
-    throw Exception("not implemented");
-
-//TODO (julian) implement or remove
-ColorSwatch<int> curvedSwatchFromColor(Color color, Curve curve) =>
-    throw Exception("not implemented");
