@@ -18,7 +18,7 @@ class TiOCoreExample extends StatelessWidget {
         accentColor: Colors.blueAccent,
         disabledColor: constantSwatchFromColor(Colors.black54),
         surfaceColor: constantSwatchFromColor(Colors.white),
-        textTheme: TextTheme(),
+        textTheme: Typography.blackMountainView,
       ),
       home: RootPage(),
     );

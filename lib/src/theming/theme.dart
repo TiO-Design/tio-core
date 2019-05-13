@@ -1,33 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tio_core/src/util/type_utils.dart';
 
-/**
- * Foundation:
- *    - lerp utils for animations
- *    - type adapter for material/cupertino
- *    - background color
- *    - add support for shaping
- *    - color for shapes/materials
- *
- *    - IconTheme:
- *        - selected Color
- *        - unselected Color
- *        - focus Color
- *    - TextTHeme:
- *        - font sizes
- *        - font color
- *        - font family
- *
- *        BaseTheme:
- *          - accentColor -> Shadable
- *          - surfaceColor -> Shadable
- *          - (disabledColor -> Color)
- *
- *          - textTheme
- *            - font color -> Shadable
- *            - font family
- */
-
 class TioTheme<T extends TioThemeData> extends InheritedWidget {
   final T theme;
 

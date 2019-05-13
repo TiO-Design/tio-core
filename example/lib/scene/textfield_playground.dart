@@ -12,6 +12,8 @@ class _TextFieldPlaygroundState extends State<TextFieldPlayground> {
   Widget build(BuildContext context) {
     return Container(
       color: TioTheme.of(context).surfaceColor,
+      alignment: Alignment.center,
+      child: TioTextField(),
     );
   }
 }
