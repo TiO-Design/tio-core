@@ -34,17 +34,23 @@ class ScalingPlayground extends StatelessWidget {
           Text("scaled onGrid(1): ${scaledDimensions.onGrid(1, scaled: true)}"),
         ]),
         SizedBox(height: 48),
-        TextBoxThatShouldScale(),
+        ScalingTextBox(description: "This box scales"),
         SizedBox(height: 16),
         TextScaleAwareDimensions(
-          child: TextBoxThatShouldScale(),
+          child: ScalingTextBox(
+            description: "This box scales with the text",
+          ),
         )
       ],
     );
   }
 }
 
-class TextBoxThatShouldScale extends StatelessWidget {
+class ScalingTextBox extends StatelessWidget {
+  final String description;
+
+  ScalingTextBox({@required this.description});
+
   @override
   Widget build(BuildContext context) {
     var size = Dimensions.of(context).onGrid(16, scaled: true);
@@ -53,7 +59,7 @@ class TextBoxThatShouldScale extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-      child: Text("This box scales "),
+      child: Text(description, textAlign: TextAlign.center),
     );
   }
 }
