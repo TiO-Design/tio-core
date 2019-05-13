@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tio_core/src/util/type_utils.dart';
 
 /**
  * Foundation:
@@ -34,8 +35,11 @@ class TioTheme<T extends TioThemeData> extends InheritedWidget {
       : assert(child != null),
         super(key: key, child: child);
 
-  static T of<T extends TioTheme>(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(TioTheme) as TioTheme;
+  static T of<T extends TioThemeData>(BuildContext context) {
+    var inheritedWidget = context
+        .inheritFromWidgetOfExactType(typeOf<TioTheme<T>>()) as TioTheme<T>;
+
+    return inheritedWidget.theme;
   }
 
   @override
@@ -49,10 +53,13 @@ class TioThemeData {
   final ColorSwatch<int> surfaceColor;
   final ColorSwatch<int> disabledColor;
 
+  final TextTheme textTheme;
+
   TioThemeData({
     @required this.accentColor,
     @required this.surfaceColor,
     @required this.disabledColor,
+    @required this.textTheme,
   });
 
   // -----
@@ -62,5 +69,6 @@ class TioThemeData {
   ThemeData asMaterialTheme() => ThemeData(
       accentColor: accentColor,
       cardColor: surfaceColor,
-      disabledColor: disabledColor);
+      disabledColor: disabledColor,
+      textTheme: textTheme);
 }

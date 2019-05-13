@@ -20,17 +20,22 @@ class TiOCoreExample extends StatelessWidget {
         accentColor: Colors.blueAccent,
         disabledColor: constantSwatchFromColor(Colors.black54),
         surfaceColor: constantSwatchFromColor(Colors.white),
+        textTheme: TextTheme(),
       ),
-      home: Container(
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            FlatButton(
-              onPressed: () => _navigateToDimensionPage(context),
-              child: Text("Dimensions"),
-            ),
-          ],
-        ),
+      home: RootPage(),
+    );
+  }
+}
+
+class RootPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      alignment: Alignment.center,
+      child: FlatButton(
+        onPressed: () => _navigateToDimensionPage(context),
+        child: Text("Dimensions"),
       ),
     );
   }

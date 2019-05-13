@@ -29,20 +29,20 @@ class TioApp<D extends DimensionsData> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WidgetsApp(
-      title: title ?? "",
-      color: Colors.white,
-      builder: (context, widget) => widget,
-      onGenerateRoute: onGenerateRoute,
-      pageRouteBuilder: _pageRouteBuilder,
-      home: Theme(
-        data: theme.asMaterialTheme(),
-        child: Dimensions<D>(
-          data: dimensions,
-          child: home,
+    return Theme(
+      data: theme.asMaterialTheme(),
+      child: Dimensions<D>(
+        data: dimensions,
+        child: WidgetsApp(
+          title: title ?? "",
+          color: Colors.white,
+          builder: (context, widget) => widget,
+          onGenerateRoute: onGenerateRoute,
+          pageRouteBuilder: _pageRouteBuilder,
+          home: home,
+          localizationsDelegates: _localizationsDelegates,
         ),
       ),
-      localizationsDelegates: _localizationsDelegates,
     );
   }
 

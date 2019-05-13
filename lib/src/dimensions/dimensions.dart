@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:tio_core/src/dimensions/dimensions_data.dart';
+import 'package:tio_core/src/util/type_utils.dart';
 
 /// Applies dimensions to descendant widgets.
 ///
@@ -54,8 +55,8 @@ class Dimensions<D extends DimensionsData> extends StatelessWidget {
   /// )
   /// ```
   static D of<D extends DimensionsData>(BuildContext context) {
-    _InheritedDimensions<D> inheritedDimensions = context
-        .inheritFromWidgetOfExactType(_typeOf<_InheritedDimensions<D>>());
+    _InheritedDimensions<D> inheritedDimensions =
+        context.inheritFromWidgetOfExactType(typeOf<_InheritedDimensions<D>>());
 
     if (inheritedDimensions != null) {
       return inheritedDimensions.dimensions.data;
@@ -67,12 +68,6 @@ class Dimensions<D extends DimensionsData> extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       _InheritedDimensions<D>(dimensions: this, child: child);
-
-  // -----
-  // Util
-  // -----
-
-  static Type _typeOf<T>() => T;
 }
 
 /// Creates new scoped [Dimensions] that use the system text scale factor
