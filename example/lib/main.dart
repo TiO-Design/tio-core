@@ -1,3 +1,4 @@
+import 'package:example/app_dimensions_data.dart';
 import 'package:example/scene/dimension_scene.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -27,7 +28,7 @@ class RootPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: TioTheme.of(context).surfaceColor,
       alignment: Alignment.center,
       child: FlatButton(
         onPressed: () => _navigateToDimensionPage(context),

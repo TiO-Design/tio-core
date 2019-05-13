@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:tio_core/src/dimensions/dimensions.dart';
 import 'package:tio_core/src/dimensions/dimensions_data.dart';
 import 'package:tio_core/src/theming/theme.dart';
+import 'package:tio_core/tio_core.dart';
 
 class TioApp<D extends DimensionsData> extends StatelessWidget {
   final Widget home;
@@ -34,16 +35,19 @@ class TioApp<D extends DimensionsData> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: theme.asMaterialTheme(),
-      child: Dimensions<D>(
-        data: dimensions,
-        child: WidgetsApp(
-          title: title ?? "",
-          color: color ?? Colors.white,
-          builder: (context, widget) => widget,
-          onGenerateRoute: onGenerateRoute,
-          pageRouteBuilder: _pageRouteBuilder,
-          home: home,
-          localizationsDelegates: _localizationsDelegates,
+      child: TioTheme(
+        theme: theme,
+        child: Dimensions<D>(
+          data: dimensions,
+          child: WidgetsApp(
+            title: title ?? "",
+            color: color ?? Colors.white,
+            builder: (context, widget) => widget,
+            onGenerateRoute: onGenerateRoute,
+            pageRouteBuilder: _pageRouteBuilder,
+            home: home,
+            localizationsDelegates: _localizationsDelegates,
+          ),
         ),
       ),
     );
