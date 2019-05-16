@@ -10,10 +10,25 @@ class TextFieldPlayground extends StatefulWidget {
 class _TextFieldPlaygroundState extends State<TextFieldPlayground> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: TioTheme.of(context).surfaceColor,
-      alignment: Alignment.center,
-      child: TioTextField(),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Container(
+        padding: EdgeInsets.all(24),
+        color: TioTheme.of(context).surfaceColor,
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              decoration: InputDecoration(hintText: "Search something"),
+            ),
+            SizedBox(height: 32),
+            TioTextField(
+              hint: "Search something",
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
