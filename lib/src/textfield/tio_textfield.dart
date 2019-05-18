@@ -3,10 +3,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tio_core/src/core/animation/color_animation_controller.dart';
 import 'package:tio_core/src/core/tio_theme_mixin.dart';
+import 'package:tio_core/src/textfield/textfield_error.dart';
 
 const textFieldHeight = 56.0;
 const contentHeight = 24.0;
 const horizontalPadding = 16.0;
+const errorContainerHeight = 16.0;
 
 const Color borderColor = const Color(0xFFD9D9D9);
 const Color errorColor = const Color(0xFFAF0120);
@@ -35,10 +37,10 @@ class TioTextField extends StatefulWidget {
   final TextEditingController controller;
 
   final Duration duration;
-  final bool isValid;
-  final String errorMessage;
 
   final Function(String) onChanged;
+
+  final TextFieldError error;
 
   TioTextField({
     this.leading,
@@ -50,10 +52,9 @@ class TioTextField extends StatefulWidget {
     this.textStyle,
     this.controller,
     this.hint,
-    this.isValid = true,
-    this.errorMessage = "",
     this.duration = const Duration(milliseconds: 200),
     this.onChanged,
+    this.error = const TextFieldError.none(),
   });
 
   @override
@@ -119,21 +120,27 @@ class _TioTextFieldState extends State<TioTextField>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(
-        minHeight: textFieldHeight,
-        maxHeight: textFieldHeight,
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      decoration: _textFieldDecoration,
-      child: Row(
-        children: [
-          _buildLeading(),
-          SizedBox(width: horizontalPadding),
-          Expanded(child: _buildEditableText()),
-          SizedBox(width: horizontalPadding),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          constraints: BoxConstraints(
+            minHeight: textFieldHeight,
+            maxHeight: textFieldHeight,
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          decoration: _textFieldDecoration,
+          child: Row(
+            children: [
+              _buildLeading(),
+              SizedBox(width: horizontalPadding),
+              Expanded(child: _buildEditableText()),
+              SizedBox(width: horizontalPadding),
+            ],
+          ),
+        ),
+        _buildError(),
+      ],
     );
   }
 
@@ -153,7 +160,7 @@ class _TioTextFieldState extends State<TioTextField>
   void didUpdateWidget(oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.isValid == widget.isValid) return;
+    if (oldWidget.error.isValid == widget.error.isValid) return;
     _onValidationChanged();
   }
 
@@ -210,6 +217,24 @@ class _TioTextFieldState extends State<TioTextField>
     );
   }
 
+  Widget _buildError() {
+    if (!widget.error.enabled && widget.error.isValid) return Container();
+    return Container(
+      padding: EdgeInsets.all(4),
+      child: AnimatedOpacity(
+        opacity: widget.error.isValid ? 0 : 1,
+        duration: widget.duration,
+        child: Text(
+          widget.error.text ?? "",
+          style: tioTheme.textTheme.subhead.copyWith(
+            color: errorColor,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
+
   // -----
   // Styling
   // -----
@@ -252,7 +277,7 @@ class _TioTextFieldState extends State<TioTextField>
   }
 
   void _onValidationChanged() {
-    !widget.isValid
+    !widget.error.isValid
         ? _borderColorController.forward()
         : _borderColorController.reverse();
   }
