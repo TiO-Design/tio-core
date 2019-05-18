@@ -8,6 +8,8 @@ class TextFieldPlayground extends StatefulWidget {
 }
 
 class _TextFieldPlaygroundState extends State<TextFieldPlayground> {
+  bool _isValid = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +28,10 @@ class _TextFieldPlaygroundState extends State<TextFieldPlayground> {
             SizedBox(height: 32),
             TioTextField(
               leading: Icon(Icons.search),
-              hint: "Search something",
+              hint: "Text with max 5 chars",
+              isValid: _isValid,
+              errorMessage: "I said not more than 5 chars!!!",
+              onChanged: (text) => setState(() => _isValid = text.length <= 5),
             ),
           ],
         ),

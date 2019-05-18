@@ -17,39 +17,45 @@ abstract class ColorAnimationController {
           @required Duration duration,
           @required TickerProvider vsync,
           Curve curve = Curves.easeOut}) =>
-      _ColorAnimationControllerImpl(
+      ColorAnimationController.byController(
           begin: begin,
           end: end,
-          duration: duration,
-          curve: curve,
-          vsync: vsync);
+          controller: AnimationController(
+            duration: duration,
+            vsync: vsync,
+          ));
+
+  factory ColorAnimationController.byController(
+          {@required Color begin,
+          @required Color end,
+          @required AnimationController controller,
+          Curve curve = Curves.easeOut}) =>
+      _ColorAnimationControllerWrapper(
+        begin: begin,
+        end: end,
+        curve: curve,
+        animationController: controller,
+      );
 }
 
-class _ColorAnimationControllerImpl implements ColorAnimationController {
+class _ColorAnimationControllerWrapper implements ColorAnimationController {
   // -----
   // Internal
   // -----
   final Color begin;
   final Color end;
-  final Duration duration;
   final Curve curve;
+  final AnimationController animationController;
 
   Animation<Color> _animation;
-  final AnimationController _animationController;
 
-  _ColorAnimationControllerImpl({
+  _ColorAnimationControllerWrapper({
     @required this.begin,
     @required this.end,
-    @required this.duration,
     @required this.curve,
-    @required TickerProvider vsync,
-  }) : _animationController =
-            AnimationController(vsync: vsync, duration: duration) {
-    _animation = CurvedAnimation(
-      parent: _animationController,
-      curve: curve,
-    ).drive(ColorTween(begin: begin, end: end));
-  }
+    @required this.animationController,
+  }) : _animation = CurvedAnimation(parent: animationController, curve: curve)
+            .drive(ColorTween(begin: begin, end: end));
 
   // -----
   // ColorAnimationController
@@ -60,16 +66,16 @@ class _ColorAnimationControllerImpl implements ColorAnimationController {
 
   @override
   TickerFuture forward({double from}) =>
-      _animationController.forward(from: from);
+      animationController.forward(from: from);
 
   @override
   TickerFuture reverse({double from}) =>
-      _animationController.reverse(from: from);
+      animationController.reverse(from: from);
 
   @override
   void addListener(Function() callback) =>
-      _animationController.addListener(callback);
+      animationController.addListener(callback);
 
   @override
-  void dispose() => _animationController.dispose();
+  void dispose() => animationController.dispose();
 }

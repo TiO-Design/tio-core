@@ -38,6 +38,8 @@ class TioTextField extends StatefulWidget {
   final bool isValid;
   final String errorMessage;
 
+  final Function(String) onChanged;
+
   TioTextField({
     this.leading,
     this.trailing,
@@ -51,6 +53,7 @@ class TioTextField extends StatefulWidget {
     this.isValid = true,
     this.errorMessage = "",
     this.duration = const Duration(milliseconds: 200),
+    this.onChanged,
   });
 
   @override
@@ -59,11 +62,14 @@ class TioTextField extends StatefulWidget {
 
 class _TioTextFieldState extends State<TioTextField>
     with TioThemeMixin, TickerProviderStateMixin {
-  TextEditingController _controller;
-  String _text = "";
-
   FocusNode _focusNode;
+  TextEditingController _controller;
 
+  // -----
+  // Internal state
+  // -----
+
+  String _text = "";
   Color _backgroundColor;
   Color _tintColor;
   Color _borderColor;
@@ -72,9 +78,9 @@ class _TioTextFieldState extends State<TioTextField>
   // AnimationControllers
   // -----
 
+  ColorAnimationController _borderColorController;
   ColorAnimationController _backgroundColorController;
   ColorAnimationController _tintColorController;
-  ColorAnimationController _borderColorController;
 
   @override
   void initState() {
@@ -83,6 +89,14 @@ class _TioTextFieldState extends State<TioTextField>
 
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(_onFocusChanged);
+
+    _borderColor = borderColor;
+    _borderColorController = ColorAnimationController(
+      begin: borderColor,
+      end: errorColor,
+      duration: widget.duration,
+      vsync: this,
+    )..addListener(_onColorAnimationTick);
 
     _backgroundColor = Colors.white;
     _backgroundColorController = ColorAnimationController(
@@ -96,14 +110,6 @@ class _TioTextFieldState extends State<TioTextField>
     _tintColorController = ColorAnimationController(
       begin: inActiveTint,
       end: activeTint,
-      duration: widget.duration,
-      vsync: this,
-    )..addListener(_onColorAnimationTick);
-
-    _borderColor = borderColor;
-    _borderColorController = ColorAnimationController(
-      begin: borderColor,
-      end: errorColor,
       duration: widget.duration,
       vsync: this,
     )..addListener(_onColorAnimationTick);
@@ -133,8 +139,13 @@ class _TioTextFieldState extends State<TioTextField>
 
   @override
   void dispose() {
-    _controller?.dispose();
-    _focusNode?.dispose();
+    _controller.dispose();
+    _focusNode.dispose();
+
+    _borderColorController.dispose();
+    _backgroundColorController.dispose();
+    _tintColorController.dispose();
+
     super.dispose();
   }
 
@@ -237,6 +248,7 @@ class _TioTextFieldState extends State<TioTextField>
         : _tintColorController.reverse();
 
     setState(() => _text = _controller.text);
+    if (widget.onChanged != null) widget.onChanged(_text);
   }
 
   void _onValidationChanged() {
