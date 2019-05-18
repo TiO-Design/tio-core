@@ -3,7 +3,7 @@ import 'package:example/scene/dimension_scene.dart';
 import 'package:example/scene/textfield_playground.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tio_core/tio_core.dart';
+import 'package:tio_core/tio.dart';
 
 class NotFoundDimensions extends DimensionsData {}
 

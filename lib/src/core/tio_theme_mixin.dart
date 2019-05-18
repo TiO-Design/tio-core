@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:tio_core/src/util/on_next_frame.dart';
-import 'package:tio_core/tio_core.dart';
+import 'package:tio_core/tio_theme.dart';
 
 mixin TioThemeMixin<W extends StatefulWidget, T extends TioThemeData>
     on State<W> {
