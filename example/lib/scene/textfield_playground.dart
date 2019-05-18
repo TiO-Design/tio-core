@@ -20,10 +20,12 @@ class _TextFieldPlaygroundState extends State<TextFieldPlayground> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              decoration: InputDecoration(hintText: "Search something"),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.search), hintText: "Search something"),
             ),
             SizedBox(height: 32),
             TioTextField(
+              leading: Icon(Icons.search),
               hint: "Search something",
             ),
           ],

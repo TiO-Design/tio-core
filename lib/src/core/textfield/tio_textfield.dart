@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tio_core/src/core/tio_theme_aware.dart';
+import 'package:tio_core/src/core/animation/color_animation_controller.dart';
+import 'package:tio_core/src/core/tio_theme_mixin.dart';
 
 const textFieldHeight = 56.0;
 const contentHeight = 24.0;
-const horizontalPadding = 8.0;
+const horizontalPadding = 16.0;
+
+const Color borderColor = const Color(0xFFD9D9D9);
+const Color errorColor = const Color(0xFFAF0120);
+const Color disabledTint = const Color(0xFFCCCCCC);
+const Color inActiveTint = const Color(0xFF8C8C8C);
+const Color activeTint = const Color(0xFF404040);
+const Color focusedBackground = const Color(0xFFFAFAFA);
 
 class TioTextField extends StatefulWidget {
   /// This [Widget] will be displayed before the text fields content.
@@ -24,8 +32,11 @@ class TioTextField extends StatefulWidget {
 
   /// The [TextStyle] of inserted text.
   final TextStyle textStyle;
-
   final TextEditingController controller;
+
+  final Duration duration;
+  final bool isValid;
+  final String errorMessage;
 
   TioTextField({
     this.leading,
@@ -37,30 +48,66 @@ class TioTextField extends StatefulWidget {
     this.textStyle,
     this.controller,
     this.hint,
+    this.isValid = true,
+    this.errorMessage = "",
+    this.duration = const Duration(milliseconds: 200),
   });
 
   @override
   _TioTextFieldState createState() => _TioTextFieldState();
 }
 
-class _TioTextFieldState extends State<TioTextField> with TioThemeAware {
+class _TioTextFieldState extends State<TioTextField>
+    with TioThemeMixin, TickerProviderStateMixin {
   TextEditingController _controller;
   String _text = "";
 
   FocusNode _focusNode;
-  bool _hasFocus = false;
+
+  Color _backgroundColor;
+  Color _tintColor;
+  Color _borderColor;
+
+  // -----
+  // AnimationControllers
+  // -----
+
+  ColorAnimationController _backgroundColorController;
+  ColorAnimationController _tintColorController;
+  ColorAnimationController _borderColorController;
 
   @override
   void initState() {
     _controller = widget.controller ?? TextEditingController();
-    _controller.addListener(() {
-      setState(() => _text = _controller.text);
-    });
+    _controller.addListener(_onTextChanged);
 
     _focusNode = widget.focusNode ?? FocusNode();
-    _focusNode.addListener(() {
-      setState(() => _hasFocus = _focusNode.hasFocus);
-    });
+    _focusNode.addListener(_onFocusChanged);
+
+    _backgroundColor = Colors.white;
+    _backgroundColorController = ColorAnimationController(
+      begin: Colors.white,
+      end: focusedBackground,
+      duration: widget.duration,
+      vsync: this,
+    )..addListener(_onColorAnimationTick);
+
+    _tintColor = inActiveTint;
+    _tintColorController = ColorAnimationController(
+      begin: inActiveTint,
+      end: activeTint,
+      duration: widget.duration,
+      vsync: this,
+    )..addListener(_onColorAnimationTick);
+
+    _borderColor = borderColor;
+    _borderColorController = ColorAnimationController(
+      begin: borderColor,
+      end: errorColor,
+      duration: widget.duration,
+      vsync: this,
+    )..addListener(_onColorAnimationTick);
+
     super.initState();
   }
 
@@ -71,11 +118,11 @@ class _TioTextFieldState extends State<TioTextField> with TioThemeAware {
         minHeight: textFieldHeight,
         maxHeight: textFieldHeight,
       ),
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       decoration: _textFieldDecoration,
       child: Row(
         children: [
-          widget.leading ?? Container(),
+          _buildLeading(),
           SizedBox(width: horizontalPadding),
           Expanded(child: _buildEditableText()),
           SizedBox(width: horizontalPadding),
@@ -91,6 +138,14 @@ class _TioTextFieldState extends State<TioTextField> with TioThemeAware {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.isValid == widget.isValid) return;
+    _onValidationChanged();
+  }
+
   // -----
   // Widget Builders
   // -----
@@ -102,12 +157,14 @@ class _TioTextFieldState extends State<TioTextField> with TioThemeAware {
       child: Container(
         height: contentHeight,
         alignment: Alignment.centerLeft,
-        child: Text(widget.hint,
-            overflow: TextOverflow.ellipsis,
-            style: tioTheme.textTheme.subhead.copyWith(
-              fontSize: 16,
-              color: _hintColor,
-            )),
+        child: Text(
+          widget.hint,
+          overflow: TextOverflow.ellipsis,
+          style: tioTheme.textTheme.subhead.copyWith(
+            fontSize: 16,
+            color: _tintColor,
+          ),
+        ),
       ),
     );
   }
@@ -133,21 +190,58 @@ class _TioTextFieldState extends State<TioTextField> with TioThemeAware {
     );
   }
 
+  Widget _buildLeading() {
+    if (widget.leading == null) return Container();
+
+    return IconTheme(
+      data: IconThemeData(color: _tintColor),
+      child: widget.leading,
+    );
+  }
+
   // -----
   // Styling
   // -----
 
-  Color get _tintColor {
-    return _hasFocus ? Color(0xFF404040) : Color(0xFFD9D9D9);
-  }
-
-  Color get _hintColor {
-    return _hasFocus ? Colors.grey : _tintColor;
-  }
-
   BoxDecoration get _textFieldDecoration {
     return BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-        border: Border.all(color: _tintColor));
+      color: _backgroundColor,
+      borderRadius: BorderRadius.all(Radius.circular(4)),
+      border: Border.all(color: _borderColor),
+    );
+  }
+
+  // -----
+  // Helper
+  // -----
+
+  /// This method updates the colors of this text field and it should be called
+  /// whenever a color animation controller changed.
+  void _onColorAnimationTick() {
+    setState(() {
+      _backgroundColor = _backgroundColorController.animation.value;
+      _tintColor = _tintColorController.animation.value;
+      _borderColor = _borderColorController.animation.value;
+    });
+  }
+
+  void _onFocusChanged() {
+    _focusNode.hasFocus
+        ? _backgroundColorController.forward()
+        : _backgroundColorController.reverse();
+  }
+
+  void _onTextChanged() {
+    _controller.text.isNotEmpty
+        ? _tintColorController.forward()
+        : _tintColorController.reverse();
+
+    setState(() => _text = _controller.text);
+  }
+
+  void _onValidationChanged() {
+    !widget.isValid
+        ? _borderColorController.forward()
+        : _borderColorController.reverse();
   }
 }
