@@ -263,8 +263,8 @@ class _TioTextFieldState extends State<TioTextField>
   // Helper
   // -----
 
-  /// This method updates the colors of this text field and it should be called
-  /// whenever a color animation controller changed.
+  /// This method updates the colors of this text field.
+  /// Should be called whenever a color animation controller changed.
   void _onColorAnimationTick() {
     setState(() {
       _backgroundColor = _backgroundColorController.animation.value;
