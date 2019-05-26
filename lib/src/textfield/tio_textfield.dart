@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tio_core/src/core/animation/color_animation_controller.dart';
+import 'package:tio_core/src/core/animation/opacity_transition.dart';
 import 'package:tio_core/src/core/tio_theme_mixin.dart';
 import 'package:tio_core/src/textfield/textfield_error.dart';
 
@@ -79,6 +80,7 @@ class _TioTextFieldState extends State<TioTextField>
   // AnimationControllers
   // -----
 
+  AnimationController _errorController;
   ColorAnimationController _borderColorController;
   ColorAnimationController _backgroundColorController;
   ColorAnimationController _tintColorController;
@@ -91,12 +93,16 @@ class _TioTextFieldState extends State<TioTextField>
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(_onFocusChanged);
 
+    _errorController = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    );
+
     _borderColor = borderColor;
-    _borderColorController = ColorAnimationController(
+    _borderColorController = ColorAnimationController.byController(
+      controller: _errorController,
       begin: borderColor,
       end: errorColor,
-      duration: widget.duration,
-      vsync: this,
     )..addListener(_onColorAnimationTick);
 
     _backgroundColor = Colors.white;
@@ -219,16 +225,22 @@ class _TioTextFieldState extends State<TioTextField>
 
   Widget _buildError() {
     if (!widget.error.enabled && widget.error.isValid) return Container();
+
+    var positionAnimation =
+        _errorController.drive(Tween(begin: Offset(0, -0.5), end: Offset.zero));
+
     return Container(
       padding: EdgeInsets.all(4),
-      child: AnimatedOpacity(
-        opacity: widget.error.isValid ? 0 : 1,
-        duration: widget.duration,
-        child: Text(
-          widget.error.text ?? "",
-          style: tioTheme.textTheme.subhead.copyWith(
-            color: errorColor,
-            fontSize: 12,
+      child: OpacityTransition(
+        opacity: _errorController,
+        child: SlideTransition(
+          position: positionAnimation,
+          child: Text(
+            widget.error.text ?? "",
+            style: tioTheme.textTheme.subhead.copyWith(
+              color: errorColor,
+              fontSize: 12,
+            ),
           ),
         ),
       ),
@@ -278,7 +290,7 @@ class _TioTextFieldState extends State<TioTextField>
 
   void _onValidationChanged() {
     !widget.error.isValid
-        ? _borderColorController.forward()
-        : _borderColorController.reverse();
+        ? _errorController.forward()
+        : _errorController.reverse();
   }
 }

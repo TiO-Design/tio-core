@@ -10,7 +10,7 @@ class TextFieldError {
   const TextFieldError({
     @required this.text,
     this.isValid = true,
-    this.enabled,
+    this.enabled = true,
   });
 
   // -----
