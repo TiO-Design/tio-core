@@ -22,6 +22,7 @@ class TioTheme<T extends TioThemeData> extends InheritedWidget {
 }
 
 class TioThemeData {
+  final ColorSwatch<int> primaryColor;
   final ColorSwatch<int> accentColor;
   final ColorSwatch<int> surfaceColor;
   final ColorSwatch<int> disabledColor;
@@ -29,6 +30,7 @@ class TioThemeData {
   final TextTheme textTheme;
 
   TioThemeData({
+    this.primaryColor,
     @required this.accentColor,
     @required this.surfaceColor,
     @required this.disabledColor,
@@ -40,8 +42,10 @@ class TioThemeData {
   // -----
 
   ThemeData asMaterialTheme() => ThemeData(
-      accentColor: accentColor,
-      cardColor: surfaceColor,
-      disabledColor: disabledColor,
-      textTheme: textTheme);
+        primaryColor: primaryColor,
+        accentColor: accentColor,
+        cardColor: surfaceColor,
+        disabledColor: disabledColor,
+        textTheme: textTheme,
+      );
 }
