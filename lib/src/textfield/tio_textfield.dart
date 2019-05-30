@@ -81,9 +81,9 @@ class _TioTextFieldState extends State<TioTextField>
   // -----
 
   AnimationController _errorController;
-  ColorAnimationController _borderColorController;
-  ColorAnimationController _backgroundColorController;
-  ColorAnimationController _tintColorController;
+  ColorAnimatableController _borderColorController;
+  ColorAnimatableController _backgroundColorController;
+  ColorAnimatableController _tintColorController;
 
   @override
   void initState() {
@@ -99,14 +99,14 @@ class _TioTextFieldState extends State<TioTextField>
     );
 
     _borderColor = borderColor;
-    _borderColorController = ColorAnimationController.byController(
+    _borderColorController = ColorAnimatableController.byController(
       controller: _errorController,
       begin: borderColor,
       end: errorColor,
     )..addListener(_onColorAnimationTick);
 
     _backgroundColor = Colors.white;
-    _backgroundColorController = ColorAnimationController(
+    _backgroundColorController = ColorAnimatableController(
       begin: Colors.white,
       end: focusedBackground,
       duration: widget.duration,
@@ -114,7 +114,7 @@ class _TioTextFieldState extends State<TioTextField>
     )..addListener(_onColorAnimationTick);
 
     _tintColor = inActiveTint;
-    _tintColorController = ColorAnimationController(
+    _tintColorController = ColorAnimatableController(
       begin: inActiveTint,
       end: activeTint,
       duration: widget.duration,

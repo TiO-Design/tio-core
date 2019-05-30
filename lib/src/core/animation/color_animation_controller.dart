@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-abstract class ColorAnimationController {
+abstract class ColorAnimatableController {
   Animation<Color> get animation;
 
   TickerFuture forward({double from});
@@ -11,13 +11,13 @@ abstract class ColorAnimationController {
 
   void dispose();
 
-  factory ColorAnimationController(
+  factory ColorAnimatableController(
           {@required Color begin,
           @required Color end,
           @required Duration duration,
           @required TickerProvider vsync,
           Curve curve = Curves.easeOut}) =>
-      ColorAnimationController.byController(
+      ColorAnimatableController.byController(
           begin: begin,
           end: end,
           controller: AnimationController(
@@ -25,7 +25,7 @@ abstract class ColorAnimationController {
             vsync: vsync,
           ));
 
-  factory ColorAnimationController.byController(
+  factory ColorAnimatableController.byController(
           {@required Color begin,
           @required Color end,
           @required AnimationController controller,
@@ -38,7 +38,7 @@ abstract class ColorAnimationController {
       );
 }
 
-class _ColorAnimationControllerWrapper implements ColorAnimationController {
+class _ColorAnimationControllerWrapper implements ColorAnimatableController {
   // -----
   // Internal
   // -----
