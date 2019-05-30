@@ -1,4 +1,4 @@
-import 'package:tio_core/tio_core.dart';
+import 'package:tio_core/tio_dimensions.dart';
 
 class AppDimensionsData extends DimensionsData {
   /// Border radius scaled by 1.

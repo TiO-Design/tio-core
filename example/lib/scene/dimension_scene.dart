@@ -1,6 +1,6 @@
 import 'package:example/app_dimensions_data.dart';
 import 'package:flutter/material.dart';
-import 'package:tio_core/tio_core.dart';
+import 'package:tio_core/tio_dimensions.dart';
 
 class ScalingPlayground extends StatelessWidget {
   final double scaleFactor = 2;

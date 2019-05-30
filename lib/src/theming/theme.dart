@@ -1,33 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tio_core/src/util/type_utils.dart';
 
-/**
- * Foundation:
- *    - lerp utils for animations
- *    - type adapter for material/cupertino
- *    - background color
- *    - add support for shaping
- *    - color for shapes/materials
- *
- *    - IconTheme:
- *        - selected Color
- *        - unselected Color
- *        - focus Color
- *    - TextTHeme:
- *        - font sizes
- *        - font color
- *        - font family
- *
- *        BaseTheme:
- *          - accentColor -> Shadable
- *          - surfaceColor -> Shadable
- *          - (disabledColor -> Color)
- *
- *          - textTheme
- *            - font color -> Shadable
- *            - font family
- */
-
 class TioTheme<T extends TioThemeData> extends InheritedWidget {
   final T theme;
 
@@ -49,6 +22,7 @@ class TioTheme<T extends TioThemeData> extends InheritedWidget {
 }
 
 class TioThemeData {
+  final ColorSwatch<int> primaryColor;
   final ColorSwatch<int> accentColor;
   final ColorSwatch<int> surfaceColor;
   final ColorSwatch<int> disabledColor;
@@ -56,6 +30,7 @@ class TioThemeData {
   final TextTheme textTheme;
 
   TioThemeData({
+    this.primaryColor,
     @required this.accentColor,
     @required this.surfaceColor,
     @required this.disabledColor,
@@ -67,8 +42,10 @@ class TioThemeData {
   // -----
 
   ThemeData asMaterialTheme() => ThemeData(
-      accentColor: accentColor,
-      cardColor: surfaceColor,
-      disabledColor: disabledColor,
-      textTheme: textTheme);
+        primaryColor: primaryColor,
+        accentColor: accentColor,
+        cardColor: surfaceColor,
+        disabledColor: disabledColor,
+        textTheme: textTheme,
+      );
 }
